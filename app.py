@@ -56,7 +56,6 @@ def pix_confirmation():
     if data.get('value') != payment.value:
         return jsonify({'message': 'Invalid payment data'}), 400
     
-    
     payment.paid = True
     db.session.commit()
     socketio.emit(f'payment-confirmed-{payment.id}')
@@ -66,6 +65,12 @@ def pix_confirmation():
 @app.route('/payments/pix/<int:payment_id>', methods=['GET'])
 def payment_pix_page(payment_id):
     payment = Payment.query.get(payment_id)
+
+    if payment.paid:
+        return render_template('confirmed_payment.html',
+                                payment_id=payment.id,
+                                value=payment.value,
+                               )
 
     return render_template('payment.html', 
                            payment_id=payment.id, 
