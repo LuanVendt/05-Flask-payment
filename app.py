@@ -59,6 +59,7 @@ def pix_confirmation():
     
     payment.paid = True
     db.session.commit()
+    socketio.emit(f'payment-confirmed-{payment.id}')
     
     return jsonify({'message': 'The payment has been confirmed'})
 
